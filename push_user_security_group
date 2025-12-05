@@ -1,0 +1,22 @@
+Import-Module ActiveDirectory
+
+    # Nome do grupo
+    $GroupName = "Security group das ipressoras"
+
+    # Arquivo onde foram exportados os usuários
+    $CsvFilePath = "C:\Path\To\UsersToAddToGroup.csv"
+
+    # Importando o usuários para o for
+    $Users = Import-Csv -Path $CsvFilePath
+
+    # For que pega um usuário por vez
+    foreach ($User in $Users) {
+        $UserName = $User.SamAccountName
+        try {
+            Add-ADGroupMember -Identity $GroupName -Members $UserName -ErrorAction Stop
+            Write-Host "Successfully added user '$UserName' to group '$GroupName'."
+        }
+        catch {
+            Write-Warning "Failed to add user '$UserName' to group '$GroupName'. Error: $($_.Exception.Message)"
+        }
+    }
