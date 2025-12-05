@@ -1,0 +1,7 @@
+# Import the Active Directory module (if not already loaded)
+Import-Module ActiveDirectory
+
+# Get all disabled user accounts and select relevant properties
+Get-ADUser -Filter {Enabled -eq $false} -Properties Name, SamAccountName, UserPrincipalName, LastLogonDate |
+    Select-Object Name, SamAccountName, UserPrincipalName, LastLogonDate |
+    Export-Csv -Path "C:\Temp\DisabledADUsers.csv" -NoTypeInformation
