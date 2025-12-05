@@ -1,0 +1,12 @@
+# Definir o caminho de saída para o arquivo CSV
+$outputPath = "C:\Certificates_List.csv"
+
+# Verificar se o diretório de destino existe, senão criar
+if (-not (Test-Path (Split-Path $outputPath -Parent))) {
+    New-Item -Path (Split-Path $outputPath -Parent) -ItemType Directory | Out-Null
+}
+
+# Obter todos os certificados de todos os repositórios e exportar para um CSV
+Get-ChildItem -Path Cert:\ -Recurse | Select-Object Subject, Issuer, NotBefore, NotAfter, Thumbprint, PSPath | Export-Csv -Path $outputPath -NoTypeInformation -Encoding UTF8
+
+Write-Host "Lista de certificados exportada para: $outputPath"
