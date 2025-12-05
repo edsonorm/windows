@@ -1,0 +1,7 @@
+# Define the threshold date for inactivity (one year ago)
+$InactiveDate = (Get-Date).AddYears(-1)
+
+# Get all enabled Active Directory users and filter by LastLogonTimeStamp
+Get-ADUser -Filter {Enabled -eq $true -and LastLogonTimeStamp -lt $InactiveDate.ToFileTime()} -Properties Name, SamAccountName, LastLogonTimeStamp | 
+Select-Object Name, SamAccountName, @{Name="LastLogon";Expression={[DateTime]::FromFileTime($_.LastLogonTimeStamp)}} |
+Export-Csv -Path "C:\Temp\InactiveUsersOverOneYear.csv" -NoTypeInformation
